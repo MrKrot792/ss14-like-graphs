@@ -38,12 +38,16 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
         }
         
     }
+    //}}}
     
+    // Fuck strings.
+    // Random ID {{{
     for (int i = 0; i < 5; i++)  
     {
-        r = labs(random()) % 10;  // Ensuring a non-negative value
-        node->id[i] = '0' + r;
+        r = random() % 10;
+        node->id[i] = r + '0';
     }
+
     node->id[5] = '\0';
     //}}}
     
@@ -54,14 +58,15 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
     
     if(r > probability) // Node has childrens!
     {
-        node->childrenCount = random % 3 + 1;
+        node->childrenCount = random() % 3 + 1;
         node->children = (struct artefactNode*)malloc(node->childrenCount * sizeof(struct artefactNode));
 
         // Initialize childrens
         // Not random yet...
         for(int i = 0; i < node->childrenCount; i++)
         {
-            node->children[i] = { 0 };
+            node->children[i] = (struct artefactNode){ 0 };
+            node->children[i].depth = node->depth + 1;
         }
     }
     else // Dead end...
@@ -78,11 +83,21 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
 
 void GenerateArtefact(struct artefact* thisArtefact, unsigned int s)
 {
-    thisArtefact->rootNode = (struct artefactNode) { 0 };
     RandomizeThisNode(&thisArtefact->rootNode, s, true);
 
     // Not used yet
-    //
     //srandom(s);
     //long int r = random();
+}
+
+char* NodeToString(struct artefactNode* node)
+{
+    int size = snprintf(NULL, 0, "ID: %s \nActivated: %d \n Depth: %d\n", node->id, node->activated, node->depth);
+
+    char* result = malloc(size) + 1;
+
+    snprintf(result, size, "ID: %s \nActivated: %d \nDepth: %d\n", node->id, node->activated, node->depth);
+    result[size] = '\0';
+
+    return result;
 }

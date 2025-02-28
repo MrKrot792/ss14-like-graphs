@@ -20,6 +20,8 @@ void AddChild(struct artefactNode* node, struct artefactNode c);
 
 void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPrecision); // Children nodes won'tbe random
 
+char* NodeToString(struct artefactNode* node);
+
 typedef struct artefact
 {
     struct artefactNode rootNode;

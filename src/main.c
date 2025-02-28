@@ -8,8 +8,7 @@ int main(void)
 
     GenerateArtefact(&a, 0);
 
-    for(int i = 0; i < r.childrenCount; i++)
-    {
-        printf("Depth: %i, id: %s", r.children[i].depth, r.children[i].id);
-    }
+    printf("%s\n", NodeToString(&r));
+
+    
 }
