@@ -40,9 +40,8 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
     }
     //}}}
     
-    // Fuck strings.
     // Random ID {{{
-    for (int i = 0; i < 5; i++)  
+    for (int i = 0; i < 5; i++)
     {
         r = random() % 10;
         node->id[i] = r + '0';
@@ -54,9 +53,9 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
     // Random children {{{
     r = random() % 100;
     
-    unsigned char probability = 100 - exp(node->depth);
+    int probability = 100 - exp(node->depth);
     
-    if(r > probability) // Node has childrens!
+    if(r < probability) // Node has childrens!
     {
         node->childrenCount = random() % 3 + 1;
         node->children = (struct artefactNode*)malloc(node->childrenCount * sizeof(struct artefactNode));
@@ -83,6 +82,7 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
 
 void GenerateArtefact(struct artefact* thisArtefact, unsigned int s)
 {
+    thisArtefact->rootNode = (struct artefactNode) { .depth = 0, .parent = NULL };
     RandomizeThisNode(&thisArtefact->rootNode, s, true);
 
     // Not used yet
@@ -90,14 +90,16 @@ void GenerateArtefact(struct artefact* thisArtefact, unsigned int s)
     //long int r = random();
 }
 
-char* NodeToString(struct artefactNode* node)
+char* NodeToString(struct artefactNode node)
 {
-    int size = snprintf(NULL, 0, "ID: %s \nActivated: %d \n Depth: %d\n", node->id, node->activated, node->depth);
+    int edges = (node.parent != NULL) ? node.childrenCount + 1 : node.childrenCount;
+    int size = snprintf(NULL, 0, "ID: %s \nActivated: %d \nDepth: %d \nEdges: %d\n", node.id, node.activated, node.depth, edges);
 
     char* result = malloc(size) + 1;
 
-    snprintf(result, size, "ID: %s \nActivated: %d \nDepth: %d\n", node->id, node->activated, node->depth);
-    result[size] = '\0';
+    snprintf(result, size, "ID: %s \nActivated: %d \nDepth: %d \nEdges: %d\n", node.id, node.activated, node.depth, edges);
+
+    result[-1] = '\0';
 
     return result;
 }
