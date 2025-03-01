@@ -10,26 +10,22 @@ typedef struct artefactNode
     char activation;
     char stimulator;
 
-    struct artefactNode* parent; // Pointer
-    struct artefactNode* children; // Array
+    struct artefactNode *parent;   // Pointer
+    struct artefactNode *children; // Array
     unsigned char childrenCount;
-    
+
 } artNode;
 
-void AddChild(struct artefactNode* node, struct artefactNode c);
+void AddChild(struct artefactNode *node, struct artefactNode c);
 
-void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPrecision); // Children nodes won'tbe random
+void RandomizeThisNode(struct artefactNode *node, unsigned int s, bool highPrecision); // Children nodes won'tbe random
 
-char* NodeToString(struct artefactNode node, bool depthDepended);
+char *NodeToString(struct artefactNode node, bool depthDepended);
 
 typedef struct artefact
 {
     struct artefactNode rootNode;
 
-} artefact;
+} art;
 
-void GenerateArtefact(struct artefact* thisArtefact, unsigned int s);
-
-
-
-
+void GenerateArtefact(struct artefact *thisArtefact, unsigned int s);

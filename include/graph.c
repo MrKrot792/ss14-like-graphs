@@ -76,6 +76,7 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
     for (int i = 0; i < node->childrenCount; i++)
     {
         RandomizeThisNode(&node->children[i], 0, true);
+        node->children[i].parent = node;
     }
     // }}}
 }
@@ -111,13 +112,14 @@ char *NodeToString(struct artefactNode node, bool depthDepended)
     }
 
     int edges = (node.parent != NULL) ? node.childrenCount + 1 : node.childrenCount;
-    int size = snprintf(NULL, 0, "%sID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n", depthTab, node.id,
-                        depthTab, node.activated, depthTab, node.depth, depthTab, edges);
+    int size =
+        snprintf(NULL, 0, "%sID: %s \n%sParent's ID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n", depthTab,
+                 node.id, depthTab, node.parent->id, depthTab, node.activated, depthTab, node.depth, depthTab, edges);
 
     char *result = malloc(size) + 1;
 
-    snprintf(result, size, "%sID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n", depthTab, node.id, depthTab,
-             node.activated, depthTab, node.depth, depthTab, edges);
+    snprintf(result, size, "%sID: %s \n%sParent's ID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n", depthTab,
+             node.id, depthTab, node.parent->id, depthTab, node.activated, depthTab, node.depth, depthTab, edges);
 
     result[-1] = '\0';
 
