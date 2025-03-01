@@ -5,6 +5,8 @@
 #include <sys/time.h>
 #include <time.h>
 
+#define ex 1.0054f
+
 void AddChild(struct artefactNode *node, struct artefactNode c)
 {
     struct artefactNode *temp = realloc(&(node->children), (node->childrenCount + 1) * sizeof(struct artefactNode));
@@ -57,7 +59,8 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
 
     if (r < probability) // Node has childrens!
     {
-        node->childrenCount = random() % 3 + 1;
+
+        node->childrenCount = ceil(exp((float)((random() % 100 + 1.0f) - 50.0f) / 50.0f)); // Evil formula
         node->children = (struct artefactNode *)malloc(node->childrenCount * sizeof(struct artefactNode));
 
         // Initialize childrens
@@ -78,6 +81,8 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
         node->children[i].parent = node;
     }
     // }}}
+
+    GeneratePoins(node); // Points
 }
 
 void GenerateArtefact(struct artefact *thisArtefact, unsigned int s)
@@ -96,13 +101,13 @@ char *NodeToString(struct artefactNode node, bool depthDepended)
 
     if (depthDepended)
     {
-        depthTab = (char *)malloc(node.depth * sizeof(char) + 1);
+        depthTab = (char *)malloc(node.depth + 2);
         for (int i = 0; i < node.depth; i++)
         {
             depthTab[i] = '\t';
         }
 
-        depthTab[-1] = '\0';
+        depthTab[node.depth] = '\0';
     }
     else
     {
@@ -112,15 +117,50 @@ char *NodeToString(struct artefactNode node, bool depthDepended)
 
     int edges = (node.parent != NULL) ? node.childrenCount + 1 : node.childrenCount;
     int size =
-        snprintf(NULL, 0, "%sID: %s \n%sParent's ID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n", depthTab,
-                 node.id, depthTab, node.parent->id, depthTab, node.activated, depthTab, node.depth, depthTab, edges);
+        snprintf(NULL, 0, "%sID: %s \n%sParent's ID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n%sPoints: %d\n",
+                 depthTab, node.id, depthTab, node.parent->id, depthTab, node.activated, depthTab, node.depth, depthTab,
+                 edges, depthTab, node.points);
 
-    char *result = malloc(size) + 1;
+    char *result = malloc(size + 1);
 
-    snprintf(result, size, "%sID: %s \n%sParent's ID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n", depthTab,
-             node.id, depthTab, node.parent->id, depthTab, node.activated, depthTab, node.depth, depthTab, edges);
+    snprintf(result, size,
+             "%sID: %s \n%sParent's ID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n%sPoints: %d\n", depthTab,
+             node.id, depthTab, node.parent->id, depthTab, node.activated, depthTab, node.depth, depthTab, edges,
+             depthTab, node.points);
 
-    result[-1] = '\0';
+    result[size] = '\0';
+
+    free(depthTab);
 
     return result;
+}
+
+void GeneratePoins(struct artefactNode *node)
+{
+    unsigned char r = random() % 100;
+    node->points = (node->depth + 1) * (log(r) / log(ex));
+}
+
+void FreeNode(struct artefactNode *node) // Also frees childrens
+{
+    free(node->parent);
+    node->parent = NULL;
+
+    free(node->activation);
+    node->activation = NULL;
+    free(node->stimulator);
+    node->stimulator = NULL;
+
+    for (int i = 0; i < node->childrenCount - 1; i++)
+    {
+        FreeNode(&node->children[i]);
+    }
+
+    free(node->children);
+    node->children = NULL;
+}
+
+void FreeArtefact(struct artefact *thisArtefact)
+{
+    FreeNode(&thisArtefact->rootNode);
 }

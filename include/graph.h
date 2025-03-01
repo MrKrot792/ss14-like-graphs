@@ -7,8 +7,9 @@ typedef struct artefactNode
     unsigned char depth;
     bool activated;
 
-    char activation;
-    char stimulator;
+    char *activation;
+    char *stimulator;
+    unsigned short points;
 
     struct artefactNode *parent;   // Pointer
     struct artefactNode *children; // Array
@@ -22,6 +23,10 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s, bool highPreci
 
 char *NodeToString(struct artefactNode node, bool depthDepended);
 
+void GeneratePoins(struct artefactNode *node);
+
+void FreeNode(struct artefactNode *node);
+
 typedef struct artefact
 {
     struct artefactNode rootNode;
@@ -29,3 +34,5 @@ typedef struct artefact
 } art;
 
 void GenerateArtefact(struct artefact *thisArtefact, unsigned int s);
+
+void FreeArtefact(struct artefact *thisArtefact);
