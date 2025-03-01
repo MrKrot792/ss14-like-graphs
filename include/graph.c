@@ -1,13 +1,13 @@
-#include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-#include <sys/time.h>
-#include <math.h>
 #include "graph.h"
+#include <math.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <time.h>
 
-void AddChild(struct artefactNode* node, struct artefactNode c)
+void AddChild(struct artefactNode *node, struct artefactNode c)
 {
-    struct artefactNode* temp = realloc(&(node->children), (node->childrenCount + 1) * sizeof(struct artefactNode));
+    struct artefactNode *temp = realloc(&(node->children), (node->childrenCount + 1) * sizeof(struct artefactNode));
 
     node->children = temp;
     node->children[node->childrenCount] = c;
@@ -15,18 +15,19 @@ void AddChild(struct artefactNode* node, struct artefactNode c)
     free(temp);
 }
 
-void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPrecision) // If s == 0, then seed would be random
+void RandomizeThisNode(struct artefactNode *node, unsigned int s,
+                       bool highPrecision) // If s == 0, then seed would be random
 {
     long int r;
 
     // Seed {{{
-    if(s != 0)
+    if (s != 0)
     {
         srandom(s);
     }
     else
     {
-        if(highPrecision)
+        if (highPrecision)
         {
             struct timespec ts;
             clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -36,10 +37,9 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
         {
             srandom(time(NULL));
         }
-        
     }
     //}}}
-    
+
     // Random ID {{{
     for (int i = 0; i < 5; i++)
     {
@@ -49,22 +49,22 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
 
     node->id[5] = '\0';
     //}}}
-    
+
     // Random children {{{
     r = random() % 100;
-    
+
     int probability = 100 - exp(node->depth);
-    
-    if(r < probability) // Node has childrens!
+
+    if (r < probability) // Node has childrens!
     {
         node->childrenCount = random() % 3 + 1;
-        node->children = (struct artefactNode*)malloc(node->childrenCount * sizeof(struct artefactNode));
+        node->children = (struct artefactNode *)malloc(node->childrenCount * sizeof(struct artefactNode));
 
         // Initialize childrens
         // Not random yet...
-        for(int i = 0; i < node->childrenCount; i++)
+        for (int i = 0; i < node->childrenCount; i++)
         {
-            node->children[i] = (struct artefactNode){ 0 };
+            node->children[i] = (struct artefactNode){0};
             node->children[i].depth = node->depth + 1;
         }
     }
@@ -73,31 +73,51 @@ void RandomizeThisNode(struct artefactNode* node, unsigned int s, bool highPreci
         node->children = NULL;
     }
 
-    //for(int i = 0; i < node->childrenCount; i++)
-    //{
-        //RandomizeThisNode(&node->children[i], 0, true);
-    //}
+    for (int i = 0; i < node->childrenCount; i++)
+    {
+        RandomizeThisNode(&node->children[i], 0, true);
+    }
     // }}}
 }
 
-void GenerateArtefact(struct artefact* thisArtefact, unsigned int s)
+void GenerateArtefact(struct artefact *thisArtefact, unsigned int s)
 {
-    thisArtefact->rootNode = (struct artefactNode) { .depth = 0, .parent = NULL };
+    thisArtefact->rootNode = (struct artefactNode){.depth = 0, .parent = NULL};
     RandomizeThisNode(&thisArtefact->rootNode, s, true);
 
     // Not used yet
-    //srandom(s);
-    //long int r = random();
+    // srandom(s);
+    // long int r = random();
 }
 
-char* NodeToString(struct artefactNode node)
+char *NodeToString(struct artefactNode node, bool depthDepended)
 {
+    char *depthTab;
+
+    if (depthDepended)
+    {
+        depthTab = (char *)malloc(node.depth * sizeof(char) + 1);
+        for (int i = 0; i < node.depth; i++)
+        {
+            depthTab[i] = '\t';
+        }
+
+        depthTab[-1] = '\0';
+    }
+    else
+    {
+        depthTab = (char *)malloc(sizeof(char));
+        depthTab[0] = '\0';
+    }
+
     int edges = (node.parent != NULL) ? node.childrenCount + 1 : node.childrenCount;
-    int size = snprintf(NULL, 0, "ID: %s \nActivated: %d \nDepth: %d \nEdges: %d\n", node.id, node.activated, node.depth, edges);
+    int size = snprintf(NULL, 0, "%sID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n", depthTab, node.id,
+                        depthTab, node.activated, depthTab, node.depth, depthTab, edges);
 
-    char* result = malloc(size) + 1;
+    char *result = malloc(size) + 1;
 
-    snprintf(result, size, "ID: %s \nActivated: %d \nDepth: %d \nEdges: %d\n", node.id, node.activated, node.depth, edges);
+    snprintf(result, size, "%sID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n", depthTab, node.id, depthTab,
+             node.activated, depthTab, node.depth, depthTab, edges);
 
     result[-1] = '\0';
 
