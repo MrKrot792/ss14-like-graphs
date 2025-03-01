@@ -27,6 +27,8 @@ void GeneratePoins(struct artefactNode *node);
 
 void FreeNode(struct artefactNode *node);
 
+void PrintTree(artNode Art, unsigned int *count);
+
 typedef struct artefact
 {
     struct artefactNode rootNode;

@@ -10,23 +10,7 @@
 #define PBIG "Pretty big"         // 16-20
 #define GIANT "Giant!"            // 20-255, i guess?
 
-unsigned char count = 0;
-
-void PrintTree(artNode Art)
-{
-    char *output;
-    output = NodeToString(Art, true);
-    printf("%s\n", output);
-    printf("%c", '\n');
-
-    for (int i = 0; i < Art.childrenCount; i++)
-    {
-        PrintTree(Art.children[i]);
-        count++;
-    }
-
-    free(output);
-}
+unsigned int count = 0;
 
 char *CalculateSize(unsigned char s)
 {
@@ -59,15 +43,12 @@ char *CalculateSize(unsigned char s)
 int main(void)
 {
     art a;
-    char *artefactsSize;
 
     GenerateArtefact(&a, 0);
-    artefactsSize = CalculateSize(count + 1);
 
-    PrintTree(a.rootNode);
+    PrintTree(a.rootNode, &count);
     printf("%d\n", count + 1);
-    printf("%s\n", artefactsSize);
+    printf("%s\n", CalculateSize(count));
 
-    // free(artefactsSize); // Yeah... an error
     FreeArtefact(&a);
 }

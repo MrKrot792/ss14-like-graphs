@@ -66,7 +66,8 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
         // Initialize childrens
         for (int i = 0; i < node->childrenCount; i++)
         {
-            node->children[i] = (struct artefactNode){0};
+            // AddChild(node, (struct artefactNode){0});
+            node->children[i] = (artNode){0};
             node->children[i].depth = node->depth + 1;
         }
     }
@@ -77,7 +78,7 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
 
     for (int i = 0; i < node->childrenCount; i++)
     {
-        RandomizeThisNode(&node->children[i], 0, true);
+        RandomizeThisNode(&node->children[i], s, true);
         node->children[i].parent = node;
     }
     // }}}
@@ -161,3 +162,26 @@ void FreeArtefact(struct artefact *thisArtefact)
 {
     FreeNode(&thisArtefact->rootNode);
 }
+
+void PrintTree(artNode Art, unsigned int *count)
+{
+    char *output;
+    output = NodeToString(Art, true);
+    printf("%s\n", output);
+    printf("%c", '\n');
+
+    for (int i = 0; i < Art.childrenCount; i++)
+    {
+        *count += 1;
+        PrintTree(Art.children[i], count);
+    }
+
+    free(output);
+}
+
+/*
+ * TODO:
+ * - Сделать выбор размера (оставить рандом, но более выборочно).
+ * - Интерфейс для игры (по сути сама игра).
+ * - Пока-что всё.
+ */
