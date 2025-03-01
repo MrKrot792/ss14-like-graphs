@@ -53,7 +53,7 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
     // Random children {{{
     r = random() % 100;
 
-    int probability = 100 - exp(node->depth);
+    int probability = 100 - exp(1.4f * node->depth);
 
     if (r < probability) // Node has childrens!
     {
@@ -61,7 +61,6 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
         node->children = (struct artefactNode *)malloc(node->childrenCount * sizeof(struct artefactNode));
 
         // Initialize childrens
-        // Not random yet...
         for (int i = 0; i < node->childrenCount; i++)
         {
             node->children[i] = (struct artefactNode){0};

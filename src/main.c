@@ -1,22 +1,25 @@
 #include "../include/graph.h"
 #include <stdio.h>
 
+int count = 0;
+
+void PrintTree(artNode Art)
+{
+    printf("%s\n", NodeToString(Art, true));
+    printf("%c", '\n');
+    for (int i = 0; i < Art.childrenCount; i++)
+    {
+        PrintTree(Art.children[i]);
+        count++;
+    }
+}
+
 int main(void)
 {
-    struct artefact a; // New artefact
-    int ejdj;
+    art a; // New artefact
 
     GenerateArtefact(&a, 0); // Generating new one
 
-    printf("%s\n", NodeToString(a.rootNode, true)); // Printing it's info
-    for (int i = 0; i < a.rootNode.childrenCount; i++)
-    {
-        printf("%s\n", NodeToString(a.rootNode.children[i], true));
-        printf("%c", '\n');
-        for (int j = 0; j < a.rootNode.children[i].childrenCount; j++)
-        {
-            printf("%s\n", NodeToString(a.rootNode.children[i].children[j], true));
-            printf("%c", '\n');
-        }
-    }
+    PrintTree(a.rootNode);
+    printf("%d\n", count + 1);
 }
