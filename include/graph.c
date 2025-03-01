@@ -141,23 +141,20 @@ void GeneratePoins(struct artefactNode *node)
     node->points = (node->depth + 1) * (log(r) / log(ex));
 }
 
-void FreeNode(struct artefactNode *node) // Also frees childrens
+void FreeNode(struct artefactNode *node)
 {
-    free(node->parent);
-    node->parent = NULL;
+    if (!node)
+        return;
 
     free(node->activation);
-    node->activation = NULL;
     free(node->stimulator);
-    node->stimulator = NULL;
 
-    for (int i = 0; i < node->childrenCount - 1; i++)
+    for (int i = 0; i < node->childrenCount; i++)
     {
         FreeNode(&node->children[i]);
     }
 
     free(node->children);
-    node->children = NULL;
 }
 
 void FreeArtefact(struct artefact *thisArtefact)
