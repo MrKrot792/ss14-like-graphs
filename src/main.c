@@ -17,4 +17,5 @@ int main(void)
     printf("%s\n", CalculateSize(count));
 
     FreeArtefact(&a);
+    return 0;
 }
