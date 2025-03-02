@@ -1,5 +1,5 @@
-#include "../include/game.h"
-#include "../include/graph.h"
+#include "game.h"
+#include "graph.h"
 // #include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>

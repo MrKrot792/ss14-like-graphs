@@ -1,0 +1,12 @@
+[
+    {
+        "command": "cc -c -Wall -Wextra -std=c11 -Iinclude -o src/graph.o src/graph.c",
+        "directory": "/data/data/com.termux/files/home/programming/c/ss14-like graphs",
+        "file": "/data/data/com.termux/files/home/programming/c/ss14-like graphs/src/graph.c"
+    },
+    {
+        "command": "cc -c -Wall -Wextra -std=c11 -Iinclude -o src/main.o src/main.c",
+        "directory": "/data/data/com.termux/files/home/programming/c/ss14-like graphs",
+        "file": "/data/data/com.termux/files/home/programming/c/ss14-like graphs/src/main.c"
+    }
+]
