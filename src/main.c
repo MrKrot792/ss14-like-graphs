@@ -1,6 +1,5 @@
 #include "game.h"
 #include "graph.h"
-// #include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -10,7 +9,7 @@ int main(void)
 {
     art a;
 
-    GenerateArtefact(&a, 0);
+    GenerateArtefact(&a, 0, big);
 
     PrintTree(a.rootNode, &count);
     printf("%d\n", count + 1); // Debug info

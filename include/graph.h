@@ -1,7 +1,7 @@
 #pragma once
 #include <stdbool.h>
 
-#define ex 1.0054f
+#include "game.h"
 
 typedef struct artefactNode
 {
@@ -20,15 +20,11 @@ typedef struct artefactNode
 } artNode;
 
 void AddChild(struct artefactNode *node, struct artefactNode c);
-
-void RandomizeThisNode(struct artefactNode *node, unsigned int s, bool highPrecision); // Children nodes won'tbe random
-
+void RandomizeThisNode(struct artefactNode *node, unsigned int s, bool highPrecision,
+                       unsigned char size); // Children nodes won'tbe random
 char *NodeToString(struct artefactNode node, bool depthDepended);
-
 void GeneratePoins(struct artefactNode *node);
-
 void FreeNode(struct artefactNode *node);
-
 void PrintTree(artNode Art, unsigned int *count);
 
 typedef struct artefact
@@ -38,6 +34,5 @@ typedef struct artefact
 
 } art;
 
-void GenerateArtefact(struct artefact *thisArtefact, unsigned int s);
-
+void GenerateArtefact(struct artefact *thisArtefact, unsigned int seed, enum size s);
 void FreeArtefact(struct artefact *thisArtefact);

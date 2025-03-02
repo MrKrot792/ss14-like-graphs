@@ -1,9 +1,12 @@
 #include "graph.h"
+#include "game.h"
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
+
+#define ex 1.0054f
 
 void AddChild(struct artefactNode *node, struct artefactNode c)
 {
@@ -15,15 +18,15 @@ void AddChild(struct artefactNode *node, struct artefactNode c)
     free(temp);
 }
 
-void RandomizeThisNode(struct artefactNode *node, unsigned int s,
-                       bool highPrecision) // If s == 0, then seed would be random
+void RandomizeThisNode(struct artefactNode *node, enum size s, bool highPrecision,
+                       unsigned char size) // If s == 0, then seed would be random
 {
     long int r;
 
     // Seed {{{
-    if (s != 0)
+    if (size != 0)
     {
-        srandom(s);
+        srandom(size);
     }
     else
     {
@@ -57,8 +60,8 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
 
     if (r < probability) // Node has childrens!
     {
-
-        node->childrenCount = ceil(exp((float)((random() % 100 + 1.0f) - 50.0f) / 50.0f)); // Evil formula
+        // Lover chance for more nodes
+        node->childrenCount = CalculateChildCount(random() % 100, s);
         node->children = (struct artefactNode *)malloc(node->childrenCount * sizeof(struct artefactNode));
 
         // Initialize childrens
@@ -76,7 +79,7 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
 
     for (int i = 0; i < node->childrenCount; i++)
     {
-        RandomizeThisNode(&node->children[i], s, true);
+        RandomizeThisNode(&node->children[i], s, true, size);
         node->children[i].parent = node;
     }
     // }}}
@@ -84,10 +87,10 @@ void RandomizeThisNode(struct artefactNode *node, unsigned int s,
     GeneratePoins(node); // Points
 }
 
-void GenerateArtefact(struct artefact *thisArtefact, unsigned int s)
+void GenerateArtefact(struct artefact *thisArtefact, unsigned int seed, enum size s)
 {
     thisArtefact->rootNode = (struct artefactNode){.depth = 0, .parent = NULL};
-    RandomizeThisNode(&thisArtefact->rootNode, s, true);
+    RandomizeThisNode(&thisArtefact->rootNode, s, true, seed);
 
     // Not used yet
     // srandom(s);
@@ -115,19 +118,19 @@ char *NodeToString(struct artefactNode node, bool depthDepended)
     }
 
     int edges = (node.parent != NULL) ? node.childrenCount + 1 : node.childrenCount;
-    int size =
+    int Size =
         snprintf(NULL, 0, "%sID: %s \n%sParent's ID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n%sPoints: %d\n",
                  depthTab, node.id, depthTab, node.parent->id, depthTab, node.activated, depthTab, node.depth, depthTab,
                  edges, depthTab, node.points);
 
-    char *result = malloc(size + 1);
+    char *result = malloc(Size + 1);
 
-    snprintf(result, size,
+    snprintf(result, Size,
              "%sID: %s \n%sParent's ID: %s \n%sActivated: %d \n%sDepth: %d \n%sEdges: %d \n%sPoints: %d\n", depthTab,
              node.id, depthTab, node.parent->id, depthTab, node.activated, depthTab, node.depth, depthTab, edges,
              depthTab, node.points);
 
-    result[size] = '\0';
+    result[Size] = '\0';
 
     free(depthTab);
 
@@ -179,7 +182,7 @@ void PrintTree(artNode Art, unsigned int *count)
 
 /*
  * TODO:
- * - Сделать выбор размера (оставить рандом, но более выборочно).
- * - Интерфейс для игры (по сути сама игра).
- * - Пока-что всё.
+ * - [x] Сделать выбор размера (оставить рандом, но более выборочно).
+ * - [ ] Интерфейс для игры (по сути сама игра).
+ * - [ ] Пока-что всё.
  */
