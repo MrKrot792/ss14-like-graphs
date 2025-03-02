@@ -5,8 +5,6 @@
 #include <sys/time.h>
 #include <time.h>
 
-#define ex 1.0054f
-
 void AddChild(struct artefactNode *node, struct artefactNode c)
 {
     struct artefactNode *temp = realloc(&(node->children), (node->childrenCount + 1) * sizeof(struct artefactNode));

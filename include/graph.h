@@ -1,6 +1,8 @@
 #pragma once
 #include <stdbool.h>
 
+#define ex 1.0054f
+
 typedef struct artefactNode
 {
     char id[6];
@@ -32,6 +34,7 @@ void PrintTree(artNode Art, unsigned int *count);
 typedef struct artefact
 {
     struct artefactNode rootNode;
+    // Not ready
 
 } art;
 
